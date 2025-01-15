@@ -10,7 +10,8 @@ import fs from 'fs';
 import path, { resolve } from 'path';
 import { env } from 'process';
 import Juke from './juke/index.js';
-import { DownloadCF, GetModInfo, UploadCF } from './lib/curseforge.js';
+import { DownloadCF, GetModInfo } from './lib/curseforge.js';
+import { CodegenCreditsTarget } from './codegen/credits/target.js';
 
 Juke.chdir('../..', import.meta.url);
 Juke.setup({ file: import.meta.url }).then((code) => {
@@ -117,6 +118,8 @@ export const ModeParameter = new Juke.Parameter({
 export const KeyParameter = new Juke.Parameter({
   type: 'string'
 })
+
+export * from './codegen/credits/target.js';
 
 export const BuildModlistTarget = new Juke.Target({
   parameters: [KeyParameter],
@@ -227,7 +230,7 @@ export const DownloadModsTarget = new Juke.Target({
 });
 
 export const BuildClientTarget = new Juke.Target({
-  dependsOn: [BuildModlistTarget],
+  dependsOn: [CodegenCreditsTarget, BuildModlistTarget],
   inputs: [
     ...includeList,
     "dist/modlist.html"
@@ -344,23 +347,6 @@ export const UploadTarget = new Juke.Target({
       throw new Juke.ExitCode(1);
     }
     const rt = get(ModeParameter);
-    const clientUploadResponse = await UploadCF(env.CFCORE_API_TOKEN, {
-      mcVersion: '1.20.1',
-      file: 'dist/client.zip',
-      displayName: 'client',
-      projectID: 123, //! CHANGE THIS
-      releaseType: rt, // default beta
-      // TODO changelog
-    });
-
-    await UploadCF(env.CFCORE_API_TOKEN ?? get(KeyParameter), {
-      parentFileID: clientUploadResponse.id,
-      file: 'dist/server.zip',
-      displayName: 'server',
-      projectID: 123, //! CHANGE THIS
-      releaseType: rt, // default beta
-      // TODO changelog
-    });
   },
 })
 

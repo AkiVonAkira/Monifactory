@@ -5,7 +5,7 @@ JEIEvents.hideItems(event => {
     if (isNormalMode) {
     //GT Steam Age
     gtMachines.forEach(machine => {
-        event.hide(['gtceu:lp_steam_' + machine, 'gtceu:hp_steam_' + machine])
+        event.hide([`gtceu:lp_steam_${machine}`, `gtceu:hp_steam_${machine}`])
     })
     event.hide(['gtceu:firebrick', 'gtceu:firebricks', 'gtceu:primitive_blast_furnace'])
     event.hide(/fireclay/)
@@ -24,6 +24,12 @@ JEIEvents.hideItems(event => {
     }
 
     if (isExpertMode) {
+        event.hide(/laserio:laser/)
+        event.hide(/laserio:filter/)
+        event.hide(/laserio:card_/)
+        event.hide('laserio:overclocker_node')
+        event.hide('laserio:logistic_overclocker_card')
+        event.hide(/gtceu:[A-Za-z0-9]+_[A-Za-z0-9]+_energy_converter/)
         event.hide(/gtceu:[A-Za-z0-9]+_[A-Za-z0-9]+_energy_converter/)
     }
 })
